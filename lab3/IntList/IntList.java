@@ -106,16 +106,22 @@ public class IntList {
         return new IntList(A.first, catenate(A.rest, B));
     }
 
-    public  static IntList reverse(IntList A) {
+    public static IntList reverse(IntList A) {
         if (A == null) {
             return null;
         }
-        IntList B = null;
+        IntList B = null, ptr = A;
         while (A != null) {
             B = new IntList(A.first, B);
             A = A.rest;
         }
-        return B;
+        IntList ptr2 = B;
+        while (ptr.rest != null) {
+            ptr.first = B.first;
+            ptr = ptr.rest;
+            B = B.rest;
+        }
+        return ptr2;
     }
 
 
