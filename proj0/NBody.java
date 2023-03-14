@@ -63,9 +63,6 @@ public class NBody {
                     in.readDouble(), in.readString());
             ps[i] = newp;
         }
-        for (Planet p : ps) {
-            System.out.println(p.imgFileName);
-        }
         return ps;
     }
 }
