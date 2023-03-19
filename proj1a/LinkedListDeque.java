@@ -35,7 +35,7 @@ public class LinkedListDeque<T> {
     }
 
     public boolean isEmpty() {
-        return (size != 0);
+        return (size == 0);
     }
 
     public int size() {
@@ -58,6 +58,7 @@ public class LinkedListDeque<T> {
         TNode p = sentinel.next;
         sentinel.next = p.next;
         p.next.prev = sentinel;
+        size -= 1;
         return p.item;
     }
 
@@ -68,6 +69,7 @@ public class LinkedListDeque<T> {
         TNode p = sentinel.prev;
         sentinel.prev = p.prev;
         p.prev.next = sentinel;
+        size -= 1;
         return p.item;
     }
 
