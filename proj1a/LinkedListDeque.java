@@ -1,8 +1,8 @@
 public class LinkedListDeque<T> {
 
     public class TNode {
-        public TNode prev, next;
-        public T item;
+        private TNode prev, next;
+        private T item;
 
         public TNode(T t, TNode pre, TNode nex) {
             item = t;
@@ -73,7 +73,7 @@ public class LinkedListDeque<T> {
         return p.item;
     }
 
-    public T getIndex(int index) {
+    public T get(int index) {
         if (index >= size) {
             return null;
         }
