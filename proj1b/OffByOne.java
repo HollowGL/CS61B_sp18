@@ -4,5 +4,7 @@ public class OffByOne implements CharacterComparator {
         return isChar(x) && isChar(y) && (x - y == 1 || x - y == -1);
     }
 
-
+    public boolean isChar(char c) {
+        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+    }
 }

@@ -31,4 +31,13 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome("flake", cc));
         assertFalse(palindrome.isPalindrome("diff", cc));
     }
+
+    @Test
+    public void testIsOffByN() {
+        CharacterComparator cc = new OffByN(1);
+        assertTrue(palindrome.isPalindrome("", cc));
+        assertTrue(palindrome.isPalindrome("c", cc));
+        assertTrue(palindrome.isPalindrome("flake", cc));
+        assertFalse(palindrome.isPalindrome("diff", cc));
+    }
 }
