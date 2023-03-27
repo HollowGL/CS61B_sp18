@@ -3,15 +3,15 @@ import org.junit.Test;
 
 public class TestArrayDequeGold {
     @Test
-    public void TestRandomly() {
+    public void testRandomly() {
         int check = 1000; // check should be big enough
         ArrayDequeSolution<Integer> cor = new ArrayDequeSolution<>();
         StudentArrayDeque<Integer> act = new StudentArrayDeque<>();
         String message = "";
 
         for (int i = 0; i < check; i++) {
-            int flag = StdRandom.uniform(0,4);
-            Integer item = StdRandom.uniform( 9999);
+            int flag = StdRandom.uniform(0, 4);
+            Integer item = StdRandom.uniform(100);
             if (flag == 0) {
                 if (!cor.isEmpty()) {
                     message = message + "removeFirst()\n";
@@ -31,8 +31,8 @@ public class TestArrayDequeGold {
                 act.addLast(item);
                 message = message + "addLast(" + item + ")\n";
             }
-//            System.out.println(flag);
-//            System.out.println(message);
+            // System.out.println(flag);
+            // System.out.println(message);
         }
     }
 }
