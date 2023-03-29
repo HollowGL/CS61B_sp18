@@ -1,4 +1,5 @@
 package synthesizer;
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -9,7 +10,7 @@ import static org.junit.Assert.*;
 public class TestArrayRingBuffer {
     @Test
     public void someTest() {
-        //ArrayRingBuffer arb = new ArrayRingBuffer(10);
+        // ArrayRingBuffer<Double> arb = new ArrayRingBuffer<Double>(4);
     }
 
     /** Calls tests for ArrayRingBuffer. */
