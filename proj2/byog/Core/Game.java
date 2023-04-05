@@ -2,6 +2,10 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
+import edu.princeton.cs.algs4.StdDraw;
+
+import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -32,7 +36,71 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        TETile[][] finalWorldFrame = null;
+        final long SEED = 1234567;
+        final Random RANDOM = new Random(SEED);
+
+        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+        int curX = RANDOM.nextInt(WIDTH - 2) + 1;
+        int curY = RANDOM.nextInt(HEIGHT - 2) + 1;
+        finalWorldFrame[curX][curY] = Tileset.FLOOR;
+
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                finalWorldFrame[i][j] = Tileset.NOTHING;
+            }
+        }
+
+        // generate floors
+        for (int i = 0; i < WIDTH * HEIGHT; i++) {
+            int dirc = RANDOM.nextInt(4);
+            if (curX <= 1) {
+                curX++;
+            } else if (curX >= WIDTH - 2) {
+                curX--;
+            }
+            if (curY <= 1) {
+                curY++;
+            } else if (curY >= HEIGHT - 2) {
+                curY--;
+            }
+            switch (dirc) {
+                case 0: curX--;
+                case 1: curX++;
+                case 2: curY--;
+                case 3: curY++;
+            }
+            finalWorldFrame[curX][curY] = Tileset.FLOOR;
+        }
+
+        genWalls(finalWorldFrame);
+
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(finalWorldFrame);
+
         return finalWorldFrame;
     }
+
+    // generate walls against floors
+    private void genWalls(TETile[][] teTiles) {
+        for (int i = 1; i < WIDTH - 1; i++) {
+            for (int j = 1; j < HEIGHT - 1; j++) {
+                if (teTiles[i][j].equals(Tileset.FLOOR)) {
+                    if (teTiles[i - 1][j].equals(Tileset.NOTHING)) {
+                        teTiles[i - 1][j] = Tileset.WALL;
+                    }
+                    if (teTiles[i + 1][j].equals(Tileset.NOTHING)) {
+                        teTiles[i + 1][j] = Tileset.WALL;
+                    }
+                    if (teTiles[i][j - 1].equals(Tileset.NOTHING)) {
+                        teTiles[i][j - 1] = Tileset.WALL;
+                    }
+                    if (teTiles[i][j + 1].equals(Tileset.NOTHING)) {
+                        teTiles[i][j + 1] = Tileset.WALL;
+                    }
+                }
+            }
+        }
+    }
+
+
 }
