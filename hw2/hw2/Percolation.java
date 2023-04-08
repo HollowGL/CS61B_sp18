@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private int[][] perc;
     private final int N;
-    private int blocked = -1;
+    private final int blocked = -1;
     private final int open = 0;
     private final int full = 1;
     private int openSites = 0;
@@ -78,7 +78,7 @@ public class Percolation {
                     System.out.print('#');
                 } else if (isFull(i, j)) {
                     System.out.print('f');
-                } else if (isOpen(i, j)){
+                } else if (isOpen(i, j)) {
                     System.out.print('o');
                 } else {
                     System.out.print('-');
