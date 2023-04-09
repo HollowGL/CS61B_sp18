@@ -28,22 +28,25 @@ public class Percolation {
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
-        if (isOpen(row, col) || isFull(row, col)) {
+        if (isOpen(row, col)) {
             return;
         }
         perc[row][col] = open;
-        openSites++;
+        if (row == 0) {            // 要改！
+            perc[row][col] = full;
+        }
         ufUnion(row, col);
+        openSites++;
     }
 
     public boolean isOpen(int row, int col) {
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
-        return perc[row][col] == open;
+        return perc[row][col] == open || perc[row][col] == full;
     }
 
-    public boolean isFull(int row, int col) {
+    public boolean isFull(int row, int col) { // 检查方法有问题
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
@@ -88,24 +91,24 @@ public class Percolation {
     }
 
     public void check() {
-        // for (int i = 0; i < N; i++) {
-        //     for (int j = 0; j < N; j++) {
-        //         if (perc[i][j] == blocked) {
-        //             System.out.print('#');
-        //         } else if (isFull(i, j)) {
-        //             System.out.print('f');
-        //         } else if (isOpen(i, j)) {
-        //             System.out.print('o');
-        //         } else {
-        //             System.out.print('-');
-        //         }
-        //     }
-        //     System.out.println();
-        // }
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < N; j++) {
+//                if (perc[i][j] == blocked) {
+//                    System.out.print('#');
+//                } else if (isFull(i, j)) {
+//                    System.out.print('f');
+//                } else if (isOpen(i, j)) {
+//                    System.out.print('o');
+//                } else {
+//                    System.out.print('-');
+//                }
+//            }
+//            System.out.println();
+//        }
 
         System.out.println("count: " + this.uf.count());
         System.out.println(this.percolates());
-        System.out.println(this.numberOfOpenSites());
+        System.out.println(this.numberOfOpenSites() + "===========");
     }
     public static void main(String[] args) {
         // test1
