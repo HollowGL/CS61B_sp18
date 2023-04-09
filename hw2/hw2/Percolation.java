@@ -3,6 +3,7 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
+    WeightedQuickUnionUF uf;
     private int[][] perc;
     private final int N;
     private final int blocked = -1;
@@ -14,6 +15,7 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         this.N = N;
+        this.uf = new WeightedQuickUnionUF(N * N);
         perc = new int[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -30,18 +32,8 @@ public class Percolation {
             return;
         }
         perc[row][col] = open;
-        if (row == 0) {
-            perc[row][col] = full;
-        } else if (isFull(row - 1, col)) {
-            perc[row][col] = full;
-        } else if (row < N - 1 && isFull(row + 1, col)) {
-            perc[row][col] = full;
-        } else if (col > 0 && isFull(row, col - 1)) {
-            perc[row][col] = full;
-        } else if (col < N - 1 && isFull(row, col + 1)) {
-            perc[row][col] = full;
-        }
         openSites++;
+        ufUnion(row, col);
     }
 
     public boolean isOpen(int row, int col) {
@@ -55,7 +47,8 @@ public class Percolation {
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
-        return perc[row][col] == full;
+        int p = uf.find(convert(row, col));
+        return p / N == 0;
     }
 
     public int numberOfOpenSites() {
@@ -64,29 +57,53 @@ public class Percolation {
 
     public boolean percolates() {
         for (int i = 0; i < N; i++) {
-            if (isFull(N - 1, i)) {
-                return true;
+            if (isOpen(0, i)) {  // 检查button是否和与top在一个set
+                int p = uf.find(convert(N - 1, i));
+                int row = p / N;
+                if (row == N - 1) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public void check() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (perc[i][j] == blocked) {
-                    System.out.print('#');
-                } else if (isFull(i, j)) {
-                    System.out.print('f');
-                } else if (isOpen(i, j)) {
-                    System.out.print('o');
-                } else {
-                    System.out.print('-');
-                }
-            }
-            System.out.println();
-        }
+    private int convert(int row, int col) {
+        return row * N + col;
+    }
 
+    private void ufUnion(int row, int col) {
+        if (row > 0 && isOpen(row - 1, col)) {
+            uf.union(convert(row - 1, col), convert(row, col));
+        }
+        if (row < N - 1 && isOpen(row + 1, col)) {
+            uf.union(convert(row + 1, col), convert(row, col));
+        }
+        if (col > 0 && isOpen(row, col - 1)) {
+            uf.union(convert(row, col - 1), convert(row, col));
+        }
+        if (col < N - 1 && isOpen(row, col + 1)) {
+            uf.union(convert(row, col + 1), convert(row, col));
+        }
+    }
+
+    public void check() {
+        // for (int i = 0; i < N; i++) {
+        //     for (int j = 0; j < N; j++) {
+        //         if (perc[i][j] == blocked) {
+        //             System.out.print('#');
+        //         } else if (isFull(i, j)) {
+        //             System.out.print('f');
+        //         } else if (isOpen(i, j)) {
+        //             System.out.print('o');
+        //         } else {
+        //             System.out.print('-');
+        //         }
+        //     }
+        //     System.out.println();
+        // }
+
+        System.out.println("count: " + this.uf.count());
         System.out.println(this.percolates());
         System.out.println(this.numberOfOpenSites());
     }
