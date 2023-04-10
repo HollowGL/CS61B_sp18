@@ -4,24 +4,19 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     WeightedQuickUnionUF uf;
-    private int[][] perc;
     private final int N;
-    private final int blocked = -1;
-    private final int open = 0;
-    private final int full = 1;
+    private int topFull = -1;
+    private int[] open;
     private int openSites = 0;
+    private boolean percolate = false;
+
     public Percolation(int N) {
         if (N <= 0) {
             throw new IllegalArgumentException();
         }
         this.N = N;
         this.uf = new WeightedQuickUnionUF(N * N);
-        perc = new int[N][N];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                perc[i][j] = blocked;
-            }
-        }
+        this.open = new int[N * N]; // 默认是0
     }
 
     public void open(int row, int col) {
@@ -31,11 +26,20 @@ public class Percolation {
         if (isOpen(row, col)) {
             return;
         }
-        perc[row][col] = open;
-        if (row == 0) {            // 要改！
-            perc[row][col] = full;
+        if (row == 0) {
+            if (topFull == -1) {
+                topFull = col;
+            } else {
+                uf.union(col, topFull);
+            }
         }
+        open[convert(row, col)] = 1;
         ufUnion(row, col);
+        if (row == N - 1 && topFull != -1) {
+            if (uf.connected(convert(row, col), topFull)) {
+                percolate = true;
+            }
+        }
         openSites++;
     }
 
@@ -43,15 +47,20 @@ public class Percolation {
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
-        return perc[row][col] == open || perc[row][col] == full;
+        return open[convert(row, col)] == 1;
     }
 
     public boolean isFull(int row, int col) { // 检查方法有问题
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
-        int p = uf.find(convert(row, col));
-        return p / N == 0;
+        if (topFull == -1 || !isOpen(row, col)) {
+            return false;
+        }
+        if (row == 0) {
+            return true;
+        }
+        return uf.connected(convert(row, col), topFull);
     }
 
     public int numberOfOpenSites() {
@@ -59,19 +68,10 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        for (int i = 0; i < N; i++) {
-            if (isOpen(0, i)) {  // 检查button是否和与top在一个set
-                int p = uf.find(convert(N - 1, i));
-                int row = p / N;
-                if (row == N - 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return percolate;
     }
 
-    private int convert(int row, int col) {
+    private int convert(int row, int col) { // 二维变一维
         return row * N + col;
     }
 
@@ -91,25 +91,26 @@ public class Percolation {
     }
 
     public void check() {
-//        for (int i = 0; i < N; i++) {
-//            for (int j = 0; j < N; j++) {
-//                if (perc[i][j] == blocked) {
-//                    System.out.print('#');
-//                } else if (isFull(i, j)) {
-//                    System.out.print('f');
-//                } else if (isOpen(i, j)) {
-//                    System.out.print('o');
-//                } else {
-//                    System.out.print('-');
-//                }
-//            }
-//            System.out.println();
-//        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (open[convert(i, j)] == 0) {
+                    System.out.print('#');
+                } else if (isFull(i, j)) {
+                    System.out.print('f');
+                } else if (isOpen(i, j)) {
+                    System.out.print('o');
+                } else {
+                    System.out.print('-');
+                }
+            }
+            System.out.println();
+        }
 
         System.out.println("count: " + this.uf.count());
         System.out.println(this.percolates());
-        System.out.println(this.numberOfOpenSites() + "===========");
+        System.out.println(this.numberOfOpenSites() + "\n===========\n");
     }
+
     public static void main(String[] args) {
         // test1
         Percolation p1 = new Percolation(2);
@@ -140,5 +141,7 @@ public class Percolation {
         p3.open(3, 0);
         p3.open(4, 0);
         p3.check();
+        System.out.println(p3.isFull(0, 0));
+        System.out.println(p3.isOpen(0, 0));
     }
 }
