@@ -3,7 +3,7 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF uf;
     private final int N;
     private int topFull = -1;
     private int[] open;
@@ -68,6 +68,16 @@ public class Percolation {
     }
 
     public boolean percolates() {
+        if (percolate) {
+            return true;
+        }
+        for (int i = 0; i < N; i++) {
+            if (isOpen(N - 1, i)) {
+                if (uf.connected(convert(N - 1, i), topFull)) {
+                    percolate = true;
+                }
+            }
+        }
         return percolate;
     }
 
