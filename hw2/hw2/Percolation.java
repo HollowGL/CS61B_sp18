@@ -3,9 +3,15 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private WeightedQuickUnionUF uf;
+    /**如果直接将底部所有open site联系在一起，会导致backwash的问题出现
+     * 所以考虑使用两个WQU，一个联系底部open site用于检测是否percolate；
+     * 另一个不联系底部，专门用于检测是否isfull。避免backwash
+     * @source:https://www.cnblogs.com/anne-vista/p/4841732.html
+     */
+    private WeightedQuickUnionUF uf, ufNoButton;
     private final int N;
     private int topFull = -1;
+    private int buttonOpen = -1;
     private int[] open;
     private int openSites = 0;
     private boolean percolate = false;
@@ -16,6 +22,7 @@ public class Percolation {
         }
         this.N = N;
         this.uf = new WeightedQuickUnionUF(N * N);
+        this.ufNoButton = new WeightedQuickUnionUF(N * N);
         this.open = new int[N * N]; // 默认是0
     }
 
@@ -31,8 +38,16 @@ public class Percolation {
                 topFull = col;
             } else {
                 uf.union(col, topFull);
+                ufNoButton.union(col, topFull);
+            }
+        } else if (row == N - 1) {
+            if (buttonOpen == -1) {
+                buttonOpen = N * (N - 1) + col;
+            } else {
+                uf.union(convert(N - 1, col), buttonOpen);
             }
         }
+
         open[convert(row, col)] = 1;
         ufUnion(row, col);
         if (row == N - 1 && topFull != -1) {
@@ -50,7 +65,7 @@ public class Percolation {
         return open[convert(row, col)] == 1;
     }
 
-    public boolean isFull(int row, int col) { // 检查方法有问题
+    public boolean isFull(int row, int col) {
         if (row < 0 || row > N - 1 || col < 0 || col > N - 1) {
             throw new IndexOutOfBoundsException();
         }
@@ -60,7 +75,7 @@ public class Percolation {
         if (row == 0) {
             return true;
         }
-        return uf.connected(convert(row, col), topFull);
+        return ufNoButton.connected(convert(row, col), topFull);
     }
 
     public int numberOfOpenSites() {
@@ -71,13 +86,11 @@ public class Percolation {
         if (percolate) {
             return true;
         }
-        if (topFull == -1) {
+        if (topFull == -1 || buttonOpen == -1) {
             return false;
         }
-        for (int i = 0; i < N; i++) {
-            if (isFull(N - 1, i)) {
-                percolate = true;
-            }
+        if (ufNoButton.connected(topFull, buttonOpen)) {
+            percolate = true;
         }
         return percolate;
     }
@@ -89,70 +102,22 @@ public class Percolation {
     private void ufUnion(int row, int col) {
         if (row > 0 && isOpen(row - 1, col)) {
             uf.union(convert(row - 1, col), convert(row, col));
+            ufNoButton.union(convert(row - 1, col), convert(row, col));
         }
         if (row < N - 1 && isOpen(row + 1, col)) {
             uf.union(convert(row + 1, col), convert(row, col));
+            ufNoButton.union(convert(row + 1, col), convert(row, col));
         }
         if (col > 0 && isOpen(row, col - 1)) {
             uf.union(convert(row, col - 1), convert(row, col));
+            ufNoButton.union(convert(row, col - 1), convert(row, col));
         }
         if (col < N - 1 && isOpen(row, col + 1)) {
             uf.union(convert(row, col + 1), convert(row, col));
+            ufNoButton.union(convert(row, col + 1), convert(row, col));
         }
-    }
-
-    public void check() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (open[convert(i, j)] == 0) {
-                    System.out.print('#');
-                } else if (isFull(i, j)) {
-                    System.out.print('f');
-                } else if (isOpen(i, j)) {
-                    System.out.print('o');
-                } else {
-                    System.out.print('-');
-                }
-            }
-            System.out.println();
-        }
-
-        System.out.println("count: " + this.uf.count());
-        System.out.println(this.percolates());
-        System.out.println(this.numberOfOpenSites() + "\n===========\n");
     }
 
     public static void main(String[] args) {
-        // test1
-        Percolation p1 = new Percolation(2);
-        p1.open(0, 1);
-        p1.open(1, 1);
-        p1.check();
-
-        // test2
-        Percolation p2 = new Percolation(3);
-        p2.open(0, 0);
-        p2.open(1, 1);
-        p2.open(2, 1);
-        p2.check();
-
-        // test3
-        Percolation p3 = new Percolation(5);
-        p3.open(0, 4);
-        p3.open(1, 4);
-        p3.open(2, 4);
-        p3.open(3, 4);
-        p3.open(3, 3);
-        p3.open(3, 2);
-        p3.open(2, 2);
-        p3.open(1, 2);
-        p3.open(1, 1);
-        p3.open(1, 0);
-        p3.open(2, 0);
-        p3.open(3, 0);
-        p3.open(4, 0);
-        p3.check();
-        System.out.println(p3.isFull(0, 0));
-        System.out.println(p3.isOpen(0, 0));
     }
 }
