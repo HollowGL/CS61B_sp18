@@ -23,7 +23,10 @@ public class Percolation {
         this.N = N;
         this.uf = new WeightedQuickUnionUF(N * N);
         this.ufNoButton = new WeightedQuickUnionUF(N * N);
-        this.open = new int[N * N]; // 默认是0
+        this.open = new int[N * N];
+        for (int i = 0; i < N * N; i++) {
+            open[i] = 0;
+        }
     }
 
     public void open(int row, int col) {
@@ -33,6 +36,9 @@ public class Percolation {
         if (isOpen(row, col)) {
             return;
         }
+        open[convert(row, col)] = 1;
+        openSites++;
+
         if (row == 0) {
             if (topFull == -1) {
                 topFull = col;
@@ -48,14 +54,12 @@ public class Percolation {
             }
         }
 
-        open[convert(row, col)] = 1;
         ufUnion(row, col);
         if (row == N - 1 && topFull != -1) {
             if (uf.connected(convert(row, col), topFull)) {
                 percolate = true;
             }
         }
-        openSites++;
     }
 
     public boolean isOpen(int row, int col) {
