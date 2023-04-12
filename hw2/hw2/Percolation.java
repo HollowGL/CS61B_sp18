@@ -75,10 +75,8 @@ public class Percolation {
             return false;
         }
         for (int i = 0; i < N; i++) {
-            if (isOpen(N - 1, i)) {
-                if (uf.connected(convert(N - 1, i), topFull)) {
-                    percolate = true;
-                }
+            if (isFull(N - 1, i)) {
+                percolate = true;
             }
         }
         return percolate;

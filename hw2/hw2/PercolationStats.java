@@ -2,6 +2,8 @@ package hw2;
 
 import edu.princeton.cs.algs4.StdRandom;
 
+import java.util.Date;
+
 public class PercolationStats {
     private double[] xt;
     private final int t;
@@ -11,6 +13,8 @@ public class PercolationStats {
         }
         xt = new double[T];
         t = T;
+        long seed = new Date().getTime();
+        StdRandom.setSeed(seed);
         for (int i = 0; i < T; i++) {
             Percolation p = pf.make(N);
             while (!p.percolates()) {
@@ -23,20 +27,22 @@ public class PercolationStats {
     }
 
     public double mean() {
-        double sum = 0;
-        for (int i = 0; i < t; i++) {
-            sum += xt[i];
-        }
-        return sum / t;
+        // double sum = 0;
+        // for (int i = 0; i < t; i++) {
+        //     sum += xt[i];
+        // }
+        // return sum / t;
+        return edu.princeton.cs.algs4.StdStats.mean(xt);
     }
 
     public double stddev() {
-        double sum = 0;
-        double u = mean();
-        for (int i = 0; i < t; i++) {
-            sum += Math.pow(xt[i] - u, 2);
-        }
-        return sum / (t - 1);
+        // double sum = 0;
+        // double u = mean();
+        // for (int i = 0; i < t; i++) {
+        //     sum += Math.pow(xt[i] - u, 2);
+        // }
+        // return sum / (t - 1);
+        return edu.princeton.cs.algs4.StdStats.stddev(xt);
     }
 
     public double confidenceLow() {
