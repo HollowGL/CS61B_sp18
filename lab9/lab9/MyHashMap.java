@@ -70,7 +70,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (value == null) {
             remove(key); // haven't implemented yet
         }
-        if (size/ buckets.length >= MAX_LF) { resize(2* buckets.length );}
+        if (size / buckets.length >= MAX_LF) { resize(2 * buckets.length); }
 
         int i = hash(key);
         if (!buckets[i].containsKey(key)) { size++; }
