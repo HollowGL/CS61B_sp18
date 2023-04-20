@@ -26,6 +26,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         this.clear();
     }
 
+    public MyHashMap(int size) {
+        buckets = new ArrayMap[size];
+        this.clear();
+    }
+
     /* Removes all of the mappings from this map. */
     @Override
     public void clear() {
@@ -65,6 +70,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (value == null) {
             remove(key); // haven't implemented yet
         }
+        if (size/ buckets.length >= MAX_LF) { resize(2* buckets.length );}
+
         int i = hash(key);
         if (!buckets[i].containsKey(key)) { size++; }
         buckets[i].put(key, value);
@@ -74,6 +81,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public int size() {
         return size;
+    }
+
+    private void resize(int newSize) {
+        MyHashMap<K, V> temp = new MyHashMap<>(newSize);
+        for (int i = 0; i < size; i++) {
+            for (K key: buckets[i].keySet()) {
+                temp.put(key, get(key));
+            }
+        }
+        this.buckets = temp.buckets;
+        this.size = temp.size;
+        // System.out.println("the hashmap has been resized!");
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
