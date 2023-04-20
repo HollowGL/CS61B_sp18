@@ -107,6 +107,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         kSet = keySetHelper(p.left, kSet);
         kSet.add(p.key);
         kSet = keySetHelper(p.right, kSet);
+        return kSet;
     }
 
     /* Returns a Set view of the keys contained in this map. */
@@ -117,7 +118,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return kSet;
     }
 
-    private Node removeHelper(K key, Node p){
+    private Node removeHelper(K key, Node p) {
         if (p == null) {
             return null;
         }
