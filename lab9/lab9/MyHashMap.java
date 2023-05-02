@@ -1,5 +1,6 @@
 package lab9;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -100,7 +101,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> kSet = new HashSet<>();
+        for (int i = 0; i < buckets.length; i++) {
+            kSet.addAll(buckets[i].keySet());
+        }
+        return kSet;
     }
 
     /* Removes the mapping for the specified key from this map if exists.
@@ -108,7 +113,13 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * UnsupportedOperationException. */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        if (key == null) return null;
+        if (get(key) != null) {
+            int i = hash(key);
+            size--;
+            return buckets[i].remove(key);
+        }
+        return null;
     }
 
     /* Removes the entry for the specified key only if it is currently mapped to
@@ -116,11 +127,19 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * throw an UnsupportedOperationException.*/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (value == null || key == null) return null;
+        V val = get(key);
+        if (val == value) {
+            int i = hash(key);
+            size--;
+            return buckets[i].remove(key);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return keySet().iterator();
     }
 }
