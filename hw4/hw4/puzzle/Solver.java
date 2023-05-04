@@ -1,7 +1,8 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Solver {
 
@@ -37,6 +38,7 @@ public class Solver {
             for (WorldState neibor : cur.state.neighbors()) {
                 minPQ.insert(new SearchNode(neibor, cur.moveCnt + 1, cur));
             }
+            cur = minPQ.delMin();
             moves++;
         }
     }
@@ -46,9 +48,9 @@ public class Solver {
     }
 
     public Iterable<WorldState> solution() {
-        Stack<WorldState> sol = new Stack<>();
+        List<WorldState> sol = new ArrayList<>();
         while (cur != null) {
-            sol.push(cur.state);
+            sol.add(cur.state);
             cur = cur.prev;
         }
         return sol;
