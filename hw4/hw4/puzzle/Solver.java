@@ -2,14 +2,12 @@ package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Solver {
 
     private MinPQ<SearchNode> minPQ = new MinPQ<>();
-    private int moves = 0;
     private SearchNode cur;
 
     private class SearchNode implements Comparable<SearchNode> {
@@ -36,19 +34,17 @@ public class Solver {
 
     public Solver(WorldState initial) {
         minPQ.insert(new SearchNode(initial, 0));
-        Set<WorldState> visitedState = new HashSet<>();
 
         cur = minPQ.delMin();
-        visitedState.add(cur.state);
         while (!cur.state.isGoal()) {
             for (WorldState neibor : cur.state.neighbors()) {
-                if (!visitedState.contains(neibor)) {
+                /* The critical optimization only checks that
+                 * no enqueued WorldState is its own grandparent!*/
+                if (cur.prev == null || !neibor.equals(cur.prev.state)) {
                     minPQ.insert(new SearchNode(neibor, cur.moveCnt + 1, cur));
                 }
             }
             cur = minPQ.delMin();
-            visitedState.add(cur.state);
-            moves++;
         }
     }
 
@@ -57,11 +53,15 @@ public class Solver {
     }
 
     public Iterable<WorldState> solution() {
-        Stack<WorldState> sol = new Stack<>();
+        ArrayList<WorldState> sol = new ArrayList<>();
         while (cur != null) {
-            sol.push(cur.state);
+            sol.add(cur.state);
             cur = cur.prev;
         }
-        return sol;
+        ArrayList<WorldState> reverse = new ArrayList<>();
+        for (int i = sol.size() - 1; i >= 0; i--) {
+            reverse.add(sol.get(i));
+        }
+        return reverse;
     }
 }
