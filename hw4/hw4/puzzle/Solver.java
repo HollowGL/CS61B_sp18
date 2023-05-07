@@ -1,9 +1,7 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
-
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class Solver {
 

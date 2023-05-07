@@ -76,7 +76,18 @@ public class Board implements WorldState {
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        return Arrays.deepEquals(this.tiles, ((Board) o).tiles);
+        Board that = (Board) o;
+        if (this.N != that.N) {
+            return false;
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.tileAt(i, j) != that.tileAt(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /** Returns the string representation of the board. 
