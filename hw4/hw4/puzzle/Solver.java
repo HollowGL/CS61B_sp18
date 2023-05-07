@@ -51,10 +51,11 @@ public class Solver {
     }
 
     public Iterable<WorldState> solution() {
+        SearchNode p = cur;
         ArrayList<WorldState> sol = new ArrayList<>();
-        while (cur != null) {
-            sol.add(cur.state);
-            cur = cur.prev;
+        while (p != null) {
+            sol.add(p.state);
+            p = p.prev;
         }
         ArrayList<WorldState> reverse = new ArrayList<>();
         for (int i = sol.size() - 1; i >= 0; i--) {
