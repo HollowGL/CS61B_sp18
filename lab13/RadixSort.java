@@ -17,7 +17,16 @@ public class RadixSort {
      */
     public static String[] sort(String[] asciis) {
         // TODO: Implement LSD Sort
-        return null;
+        int maxLen = 0;
+        String[] sorted = new String[asciis.length];
+        for (int i = 0; i < asciis.length; i++) {
+            sorted[i] = asciis[i];
+            maxLen = Math.max(asciis[i].length(), maxLen);
+        }
+        for (int i = 0; i < maxLen; i++) {
+            sortHelperLSD(sorted, i);
+        }
+        return sorted;
     }
 
     /**
@@ -28,7 +37,43 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+        int[] digits = new int[asciis.length];
+        int max = 0;
+        for (int i = 0; i < asciis.length; i++) {
+            String s = asciis[i];
+            if (index < s.length()) {
+                digits[i] = (int) s.charAt(s.length() - index - 1);
+                if (digits[i] > max) {
+                    max = digits[i];
+                }
+            } else {
+                digits[i] = 0;
+            }
+        }
+
+        int[] count = new int[max + 1];
+        for (int i : digits) {
+            count[i]++;
+        }
+
+        int[] starts = new int[max + 1];
+        int pos = 0;
+        for (int i = 0; i <= max; i++) {
+            starts[i] = pos;
+            pos += count[i];
+        }
+
+        String[] sorted = new String[asciis.length];
+        for (String s : sorted) {
+            s = "";
+        }
+        for (int i = 0; i < asciis.length; i++) {
+            int item = digits[i];
+            int place = starts[item];
+            sorted[place] = (char)item + sorted[place];
+            starts[item] += 1;
+        }
+        asciis = sorted;
     }
 
     /**
@@ -44,5 +89,19 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+
+    public static void main(String[] args) {
+        String[] asciis = {"people", "cat", "dog", "mouse"};
+        System.out.print("befor: ");
+        for (String s : asciis) {
+            System.out.print(s + " ");
+        }
+        System.out.println();
+        String[] sorted = RadixSort.sort(asciis);
+        System.out.print("after: ");
+        for (String s : sorted) {
+            System.out.print(s + " ");
+        }
     }
 }
