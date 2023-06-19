@@ -35,7 +35,13 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue<Queue<Item>> queues = new Queue<>();
+        for (Item i : items) {
+            Queue<Item> single = new Queue<>();
+            single.enqueue(i);
+            queues.enqueue(single);
+        }
+        return queues;
     }
 
     /**
@@ -54,13 +60,47 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         // Your code here!
-        return null;
+        Queue<Item> res = new Queue<>();
+        while (!q1.isEmpty() || !q2.isEmpty()) {
+            res.enqueue(getMin(q1, q2));
+        }
+        return res;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        if (items.size() <= 1) {
+            return items;
+        }
+        Queue<Queue<Item>> res = makeSingleItemQueues(items);
+        while (res.size() != 1) {
+            Queue<Queue<Item>> tmp = new Queue<>();
+            while (!res.isEmpty()) {
+                Queue<Item> q1 = res.dequeue();
+                Queue<Item> q2 = res.isEmpty() ? new Queue<>() : res.dequeue();
+                tmp.enqueue(mergeSortedQueues(q1, q2));
+            }
+            res = tmp;
+        }
+        return res.dequeue();
+    }
+
+    public static void main(String[] args) {
+        Queue<String> students = new Queue<>();
+        students.enqueue("Bob");
+        students.enqueue("Alice");
+        students.enqueue("Eve");
+        students.enqueue("Calor");
+        System.out.print("before: ");
+        for (String s : students) {
+            System.out.print(s + " ");
+        }
+        Queue<String> sortedStu = MergeSort.mergeSort(students);
+        System.out.print("\nafter: ");
+        for (String s : sortedStu) {
+            System.out.print(s + " ");
+        }
     }
 }
