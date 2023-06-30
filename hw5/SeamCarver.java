@@ -1,6 +1,6 @@
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SeamCarver {
     private Picture picture;
@@ -133,6 +133,8 @@ public class SeamCarver {
         return seam;
     }
     public void removeHorizontalSeam(int[] seam) {
+        Picture copy = new Picture(width(), height() - 1);
+        picture = SeamRemover.removeHorizontalSeam(copy, seam);
     }
     public void removeVerticalSeam(int[] seam) {
         if (seam.length != height()) {
@@ -145,7 +147,8 @@ public class SeamCarver {
                 }
             }
         }
-        picture = SeamRemover.removeVerticalSeam(picture, seam);
+        Picture copy = new Picture(width() - 1, height());
+        picture = SeamRemover.removeVerticalSeam(copy, seam);
     }
     private void validData(int x, int y) {
         if (x < 0 || x >= picture.width()) {
