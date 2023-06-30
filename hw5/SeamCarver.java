@@ -133,8 +133,7 @@ public class SeamCarver {
         return seam;
     }
     public void removeHorizontalSeam(int[] seam) {
-        Picture copy = new Picture(width(), height() - 1);
-        picture = SeamRemover.removeHorizontalSeam(copy, seam);
+        picture = new Picture(SeamRemover.removeHorizontalSeam(picture, seam));
     }
     public void removeVerticalSeam(int[] seam) {
         if (seam.length != height()) {
@@ -147,8 +146,7 @@ public class SeamCarver {
                 }
             }
         }
-        Picture copy = new Picture(width() - 1, height());
-        picture = SeamRemover.removeVerticalSeam(copy, seam);
+        picture = new Picture(SeamRemover.removeVerticalSeam(picture, seam));
     }
     private void validData(int x, int y) {
         if (x < 0 || x >= picture.width()) {
