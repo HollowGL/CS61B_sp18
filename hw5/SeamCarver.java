@@ -17,7 +17,7 @@ public class SeamCarver {
         }
     }
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
     }
     public Picture picture() {
         return this.picture;
@@ -145,22 +145,7 @@ public class SeamCarver {
                 }
             }
         }
-        if (width() == 1) {
-            picture = null;
-            return;
-        }
-
-        Picture removed = new Picture(width() - 1, height());
-        for (int i = 0; i < height(); ++i) {
-            for (int j = 0; j < width() - 1; ++j) {
-                if (j < seam[i]) {
-                    removed.set(j, i, picture.get(j, i));
-                } else {
-                    removed.set(j, i, picture.get(j + 1, i));
-                }
-            }
-        }
-        picture = removed;
+        picture = SeamRemover.removeVerticalSeam(picture, seam);
     }
     private void validData(int x, int y) {
         if (x < 0 || x >= picture.width()) {
