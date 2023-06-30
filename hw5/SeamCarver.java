@@ -5,15 +5,15 @@ import java.awt.*;
 public class SeamCarver {
     private Picture picture;
     private class Node {
-        public double val;
-        public int pre;
+        private double val;
+        private int pre;
         public Node(double val, int pre) {
             this.val = val;
             this.pre = pre;
         }
-        public void add(double val, int pre) {
-            this.val += val;
-            this.pre = pre;
+        public void add(double v, int p) {
+            this.val += v;
+            this.pre = p;
         }
     }
     public SeamCarver(Picture picture) {
@@ -135,6 +135,32 @@ public class SeamCarver {
     public void removeHorizontalSeam(int[] seam) {
     }
     public void removeVerticalSeam(int[] seam) {
+        if (seam.length != height()) {
+            throw new IllegalArgumentException();
+        } else {
+            for (int i = 1; i < height(); ++i) {
+                int diff = seam[i] - seam[i - 1];
+                if (diff != 1 && diff != -1 && diff != 0) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (width() == 1) {
+            picture = null;
+            return;
+        }
+
+        Picture removed = new Picture(width() - 1, height());
+        for (int i = 0; i < height(); ++i) {
+            for (int j = 0; j < width() - 1; ++j) {
+                if (j < seam[i]) {
+                    removed.set(j, i, picture.get(j, i));
+                } else {
+                    removed.set(j, i, picture.get(j + 1, i));
+                }
+            }
+        }
+        picture = removed;
     }
     private void validData(int x, int y) {
         if (x < 0 || x >= picture.width()) {
