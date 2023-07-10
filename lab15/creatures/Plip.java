@@ -14,18 +14,16 @@ import java.util.List;
 public class Plip extends Creature {
 
     /** red color. */
-    private int r;
+    private int r = 99;
     /** green color. */
     private int g;
     /** blue color. */
-    private int b;
+    private int b = 76;
 
     /** creates plip with energy equal to E. */
     public Plip(double e) {
         super("plip");
-        r = 0;
-        g = 0;
-        b = 0;
+        g = energy2green(e);
         energy = e;
     }
 
@@ -42,10 +40,24 @@ public class Plip extends Creature {
      *  that you get this exactly correct.
      */
     public Color color() {
-        g = 63;
+        g = energy2green(energy);
         return color(r, g, b);
     }
 
+    private int energy2green(double e) {
+        int max = 255;
+        int min = 63;
+        int green = min + (int) (e / 2 * (max - min));
+        green = Math.max(green, 63);
+        green = Math.min(green, 255);
+        return green;
+    }
+
+    private double validEnergy(double e) {
+        e = Math.min(e, 2);
+        e = Math.max(e, 0);
+        return e;
+    }
     /** Do nothing with C, Plips are pacifists. */
     public void attack(Creature c) {
     }
@@ -55,11 +67,15 @@ public class Plip extends Creature {
      *  private static final variable. This is not required for this lab.
      */
     public void move() {
+        energy -= 0.15;
+        energy = validEnergy(energy);
     }
 
 
     /** Plips gain 0.2 energy when staying due to photosynthesis. */
     public void stay() {
+        energy += 0.2;
+        energy = validEnergy(energy);
     }
 
     /** Plips and their offspring each get 50% of the energy, with none
@@ -67,7 +83,8 @@ public class Plip extends Creature {
      *  Plip.
      */
     public Plip replicate() {
-        return this;
+        this.energy *= 0.5;
+        return new Plip(energy);
     }
 
     /** Plips take exactly the following actions based on NEIGHBORS:
@@ -81,6 +98,21 @@ public class Plip extends Creature {
      *  for an example to follow.
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
+        List<Direction> empties = getNeighborsOfType(neighbors, "empty");
+        List<Direction> cloruses = getNeighborsOfType(neighbors, "clorus");
+        if (empties.size() == 0) {
+            return new Action(Action.ActionType.STAY);
+        }
+        if (energy >= 1.0) {
+            Direction dir = HugLifeUtils.randomEntry(empties);
+            return new Action(Action.ActionType.REPLICATE, dir);
+        }
+        if (cloruses.size() != 0) {
+            if (HugLifeUtils.random() < 0.5) {
+                Direction dir = HugLifeUtils.randomEntry(empties);
+                return new Action(Action.ActionType.MOVE, dir);
+            }
+        }
         return new Action(Action.ActionType.STAY);
     }
 
