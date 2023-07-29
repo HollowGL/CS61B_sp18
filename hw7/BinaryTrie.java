@@ -53,6 +53,7 @@ public class BinaryTrie implements Serializable {
             } else {
                 cur = cur.left;
             }
+            pos++;
         }
         return new Match(res, cur.ch);
     }
