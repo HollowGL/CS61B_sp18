@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BinaryTrie implements Serializable {
-    public Node root;
+    private final Node root;
 
     public BinaryTrie(Map<Character, Integer> frequencyTable) {
         MinPQ<Node> pq = new MinPQ<>();
@@ -63,7 +63,9 @@ public class BinaryTrie implements Serializable {
         return map;
     }
 
-    private void lookupTableHelper(Node node, BitSequence bitSequence, Map<Character, BitSequence> map) {
+    private void lookupTableHelper(Node node,
+                                   BitSequence bitSequence,
+                                   Map<Character, BitSequence> map) {
         if (node.isLeaf()) {
             map.put(node.ch, bitSequence);
         } else {
