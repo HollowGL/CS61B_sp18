@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.MinPQ;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BinaryTrie implements Serializable {
@@ -15,7 +16,7 @@ public class BinaryTrie implements Serializable {
         while (pq.size() > 1) {
             Node left = pq.delMin();
             Node right = pq.delMin();
-            pq.insert(new Node('\0', left.freq + right.ch, left, right));
+            pq.insert(new Node('\0', left.freq + right.freq, left, right));
         }
         root = pq.delMin();
     }
@@ -37,12 +38,37 @@ public class BinaryTrie implements Serializable {
         }
 
         public boolean isLeaf() {
-            return left != null && right != null;
+            return left == null || right == null;
         }
     }
 
     public Match longestPrefixMatch(BitSequence bitSequence) {
         Node cur = root;
-        return null;
+        int pos = 0;
+        BitSequence res = new BitSequence();
+        while (!cur.isLeaf()) {
+            res = res.appended(bitSequence.bitAt(pos));
+            if (bitSequence.bitAt(pos) == 1) {
+                cur = cur.right;
+            } else {
+                cur = cur.left;
+            }
+        }
+        return new Match(res, cur.ch);
+    }
+
+    public Map<Character, BitSequence> buildLookupTable() {
+        Map<Character, BitSequence> map = new HashMap<>();
+        lookupTableHelper(root, new BitSequence(), map);
+        return map;
+    }
+
+    private void lookupTableHelper(Node node, BitSequence bitSequence, Map<Character, BitSequence> map) {
+        if (node.isLeaf()) {
+            map.put(node.ch, bitSequence);
+        } else {
+            lookupTableHelper(node.left, bitSequence.appended(0), map);
+            lookupTableHelper(node.right, bitSequence.appended(1), map);
+        }
     }
 }
