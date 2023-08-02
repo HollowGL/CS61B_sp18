@@ -42,7 +42,7 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+        // System.out.println(params); // lrlon=-122.21106159210206, ullon=-122.27625, w=1519.0, h=715.0, ullat=37.88, lrlat=37.85577340024048
         Map<String, Object> results = new HashMap<>();
         System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
                            + "your browser.");
